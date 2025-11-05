@@ -2,6 +2,8 @@
 
 A recurrent neural network implementation for learning chaotic dynamical systems and computing their Lyapunov spectra. This project demonstrates the application of deep learning to the analysis of nonlinear dynamics using a double pendulum as a test case.
 
+![Double Pendulum GRU](double_pendulum_GRU.gif)
+
 ## Overview
 
 This repository provides tools for:
@@ -14,15 +16,11 @@ This repository provides tools for:
 
 The Lyapunov exponent quantifies the rate of separation of infinitesimally close trajectories in a dynamical system. For a dynamical system with state **x**(t), consider two nearby trajectories separated by an initial perturbation **δx**(0). The perturbation evolves as:
 
-\[
-|\delta \mathbf{x}(t)| \approx |\delta \mathbf{x}(0)| e^{\lambda t}
-\]
+$$|\delta \mathbf{x}(t)| \approx |\delta \mathbf{x}(0)| e^{\lambda t}$$
 
 The Lyapunov exponent λ is defined as:
 
-\[
-\lambda = \lim_{t \to \infty} \lim_{|\delta \mathbf{x}(0)| \to 0} \frac{1}{t} \ln \frac{|\delta \mathbf{x}(t)|}{|\delta \mathbf{x}(0)|}
-\]
+$$\lambda = \lim_{t \to \infty} \lim_{|\delta \mathbf{x}(0)| \to 0} \frac{1}{t} \ln \frac{|\delta \mathbf{x}(t)|}{|\delta \mathbf{x}(0)|}$$
 
 For an n-dimensional system, there exist n Lyapunov exponents (the **Lyapunov spectrum**), corresponding to the growth rates along different directions in phase space:
 
@@ -42,18 +40,13 @@ The double pendulum state is parameterized as **s** = [sin(θ₁), cos(θ₁), s
 
 The implementation uses a custom GRU cell with the following update equations:
 
-\[
-\mathbf{z}_t = \sigma(\mathbf{W}_z [\mathbf{x}_t, \mathbf{h}_{t-1}] + \mathbf{b}_z)
-\]
-\[
-\mathbf{r}_t = \sigma(\mathbf{W}_r [\mathbf{x}_t, \mathbf{h}_{t-1}] + \mathbf{b}_r)
-\]
-\[
-\hat{\mathbf{h}}_t = \tanh(\mathbf{W}_h [\mathbf{r}_t \odot \mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_h)
-\]
-\[
-\mathbf{h}_t = (1 - \mathbf{z}_t) \odot \mathbf{h}_{t-1} + \mathbf{z}_t \odot \hat{\mathbf{h}}_t
-\]
+$$\mathbf{z}_t = \sigma(\mathbf{W}_z [\mathbf{x}_t, \mathbf{h}_{t-1}] + \mathbf{b}_z)$$
+
+$$\mathbf{r}_t = \sigma(\mathbf{W}_r [\mathbf{x}_t, \mathbf{h}_{t-1}] + \mathbf{b}_r)$$
+
+$$\hat{\mathbf{h}}_t = \tanh(\mathbf{W}_h [\mathbf{r}_t \odot \mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_h)$$
+
+$$\mathbf{h}_t = (1 - \mathbf{z}_t) \odot \mathbf{h}_{t-1} + \mathbf{z}_t \odot \hat{\mathbf{h}}_t$$
 
 The hidden state **h**_t ∈ ℝ⁶⁰⁰ is mapped to output space via a feedforward network with ReLU activation.
 
