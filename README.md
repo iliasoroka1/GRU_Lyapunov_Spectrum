@@ -154,13 +154,13 @@ The GRU is implemented from scratch rather than using PyTorch's `nn.GRU` to enab
 ### Normalization Constraint
 
 During training and autonomous prediction, the output is projected onto the constraint manifold:
-
-\[
+$$
 \sin(\theta_i) \leftarrow \frac{\sin(\theta_i)}{\sqrt{\sin^2(\theta_i) + \cos^2(\theta_i)}}
-\]
-\[
+$$
+
+$$
 \cos(\theta_i) \leftarrow \frac{\cos(\theta_i)}{\sqrt{\sin^2(\theta_i) + \cos^2(\theta_i)}}
-\]
+$$
 
 This ensures that the learned dynamics respect the geometric structure of the angular state space.
 
