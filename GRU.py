@@ -1,13 +1,7 @@
 import numpy as np
 import torch
 import torch.nn as nn
-from torch.utils.data import Dataset, DataLoader
-import matplotlib.pyplot as plt
-import numpy as np
-import torch
-import torch.nn as nn
-from torch.utils.data import Dataset, DataLoader
-import torch
+from torch.utils.data import Dataset
 from torch.func import jacfwd
 
 class DatasetW(Dataset):
