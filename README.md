@@ -52,6 +52,10 @@ $$\mathbf{h}_t = (1 - \mathbf{z}_t) \odot \mathbf{h}_{t-1} + \mathbf{z}_t \odot 
 
 The hidden state **h**_t ∈ ℝ⁶⁰⁰ is mapped to output space via a feedforward network with ReLU activation.
 
+### Training Hyperparameters
+
+The model was trained with a hidden state dimension of 600, which proved necessary for stable long-term predictions of the chaotic dynamics. Training used sequence length 50, batch size 128, and the Adam optimizer with learning rate 0.0001 and weight decay 1e-5. The relatively large hidden state seem to allow the network to capture the complex attractor structure and maintain trajectory stability over extended prediction horisons.
+
 ### Lyapunov Spectrum Computation
 
 The algorithm follows the continuous QR decomposition method:
