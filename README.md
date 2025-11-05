@@ -2,7 +2,7 @@
 
 A recurrent neural network implementation for learning chaotic dynamical systems and computing their Lyapunov spectra. This project demonstrates the application of deep learning to the analysis of nonlinear dynamics using a double pendulum as a test case.
 
-![Double Pendulum GRU](double_pendulum_GRU.gif)
+![Double Pendulum GRU](double_pendulum_comparison.gif)
 
 ## Overview
 
@@ -154,6 +154,7 @@ The GRU is implemented from scratch rather than using PyTorch's `nn.GRU` to enab
 ### Normalization Constraint
 
 During training and autonomous prediction, the output is projected onto the constraint manifold:
+
 $$
 \sin(\theta_i) \leftarrow \frac{\sin(\theta_i)}{\sqrt{\sin^2(\theta_i) + \cos^2(\theta_i)}}
 $$
