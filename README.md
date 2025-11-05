@@ -30,6 +30,8 @@ For an n-dimensional system, there exist n Lyapunov exponents (the **Lyapunov sp
 
 A system is considered chaotic if at least one Lyapunov exponent is positive.
 
+![Lyapunov Spectrum](lyapunov_spectrum.png)
+
 ## Methodology
 
 ### State Representation
@@ -65,91 +67,6 @@ The algorithm follows the continuous QR decomposition method:
 4. **Normalization**: Compute Lyapunov exponents as λᵢ = (Σ ln|R_ii|) / (total_time)
 
 This approach treats the trained GRU as an autonomous discrete-time dynamical system and analyzes its stability properties in the learned hidden state space.
-
-## example
-
-```python
-import torch
-import numpy as np
-from GRU import RNN
-
-model = RNN(input_size=6, hidden_size=600, output_size=6)
-model.load_state_dict(torch.load('model_pendulum.pth'))
-
-data = np.load('s_sincos.npy')
-
-# Compute Lyapunov spectrum
-lyap_spectrum = model.lyapunov_exponents(
-    initial_condition=data[10000:][::2],  # Initial trajectory segment
-    n_steps=2500,                          # Number of integration steps
-    dt=0.1,                                # Time step
-    num_lyaps=500,                         # Number of exponents to compute
-    warmup_steps=1,                        # Warmup period
-    norm_freq=1,                           # QR decomposition frequency
-    epsilon=1e-15,                         # Numerical stability parameter
-    normalize_sincos=True                  # Enforce constraint sin²+cos²=1
-)
-
-print("Largest Lyapunov exponent:", lyap_spectrum[0])
-```
-
-### Training a New Model
-
-```python
-from torch.utils.data import DataLoader
-from GRU import DatasetW, RNN, train_model
-import torch.nn as nn
-
-# Prepare dataset
-seq_length = 50
-train_dataset = DatasetW(data[10000:][::2], seq_length)
-train_loader = DataLoader(train_dataset, batch_size=128, 
-                         shuffle=True, drop_last=True)
-
-# Initialize model
-model = RNN(input_size=6, hidden_size=600, output_size=6)
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model.to(device)
-
-# Configure training
-criterion = nn.MSELoss()
-optimizer = torch.optim.Adam(model.parameters(), 
-                            lr=1e-4, 
-                            weight_decay=1e-5,
-                            betas=(0.9, 0.999))
-
-# Train with normalization constraint
-train_model(model, train_loader, criterion, optimizer,
-           num_epochs=15, device=device, 
-           normalize_sincos_values=True)
-
-# Save checkpoint
-torch.save(model.state_dict(), 'model_pendulum.pth')
-```
-
-### Generating Predictions
-
-```python
-from GRU import predict_future
-
-# Generate autonomous predictions
-predictions = predict_future(
-    model=model,
-    seed_data=data[:200],      # Initial condition
-    future_steps=5000,         # Prediction horizon
-    device=device,
-    normalize_sincos_values=True
-)
-```
-
-## Implementation Details
-
-### Custom GRU Architecture
-
-The GRU is implemented from scratch rather than using PyTorch's `nn.GRU` to enable:
-- Direct access to internal weight matrices for Jacobian computation
-- Custom normalization constraints during forward passes
-- Explicit control over gradient flow for stability analysis
 
 ### Normalization Constraint
 
